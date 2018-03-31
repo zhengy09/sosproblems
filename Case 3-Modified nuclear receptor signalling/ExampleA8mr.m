@@ -1,6 +1,12 @@
 %% A.8 SBToolbox file for Matlab containing the model of nuclear receptor dignalling
 %  A modified version of the Reduced model in A.8 SBToolbox
 %  for the original reduced model, see the following thesis
+%
+%  Khoshnaw, Sarbaz Hamza Abdullah. Model Reductions in Biochemical Reaction Networks. 
+%  Diss. Department of Mathematics, 2015, Appendix A.8
+%
+
+clc;clear
 
 % parameters
 paraA8r
@@ -102,10 +108,8 @@ f(35) = u32+u34-u41;
 f(36) = u30-u42;
 f(37) = u25+u26-u48;
 
-f0 = double(subs(f,x,zeros(37,1)));               %% origina is an equilibrium point
-Jx = jacobian(f,x);
-fprintf('Eigenvalues of the linearized system:')  %% check stability via linearization
-max(eig(double(subs(Jx,x,zeros(37,1)))))
+f0 = double(subs(f,x,zeros(37,1)));               %% origin is an equilibrium point
+
 
 %% build a quadratic Lyapunov equation
 Maxiter = 2000;
@@ -127,7 +131,7 @@ CandidateMonomails = monomials(x,[0:Degree]);         % full candidate
 
 % =============================================
 % Next, define SOSP constraints
-kappa1 = 1e-2;
+kappa1 = 0.1;
 PolyIneq1 = V - kappa1*sum(x.^2);
 prog = sosineq(prog,PolyIneq1);
 
@@ -147,7 +151,7 @@ Time = toc(pro);
 % And call solver
 options.solver          = 'CDCS';
 options.params.solver   = 'sos';
-options.params.relTol   = 1e-3;
+options.params.relTol   = 1e-4;
 options.params.dispIter = 200;
 options.params.maxIter  = 2000;
 prog = sossolve(prog,options);
